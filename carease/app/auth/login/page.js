@@ -4,8 +4,8 @@ import logo from '../../../public/images/logo.svg';
 import google from '../../../public/images/google.svg';
 import Image from 'next/image';
 import Link from 'next/link';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 const page = () => {
   const router = useRouter();
@@ -18,23 +18,24 @@ const page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('/api/users/login', user);
-      console.log(response);
-      console.log('Login successfull', response.data);
 
-      router.push('/carlist');
-    } catch (err) {
-      console.error(err);
+    const result = await signIn('credentials', {
+      email: user.email,
+      password: user.password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      console.log(result.error);
+      return;
     }
+
+    router.push('/carlist');
   };
 
   return (
     <section className=" bg-signup-bg   bg-cover h-[100%] text-black py-6 px-4 tracking-wide pt-24">
-      <h3 className="text-3xl font-bold text-rose-600 text-center md:text-left mb-4 lg:mb-0">
-        Welcome Back,
-      </h3>
-      <div className=" bg-white/40 mx-auto w-[100%] sm:w-[428px] h-[670.304px] pb-1 pt-0 px-4 sm:px-14 rounded-lg">
+      <div className=" bg-white mx-auto w-[100%] sm:w-[428px] h-[638.04px] pb-1 pt-0 px-4 sm:px-14 rounded-lg">
         <Link href="/">
           <Image
             src={logo}
@@ -44,18 +45,21 @@ const page = () => {
             className="mx-auto cursor-pointer"
           />
         </Link>
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
           <h4 className="text-[28px] font-semibold">Login</h4>
 
-          <p className="text-[13.5px]">
-            Elevate your car buying adventure. Enjoy the thrill of a better
-            experience
+          <p className="text-[13.5px] mb-3">
+            Elevate your car buying experience. Enjoy the thrill to a better
+            adventure.
           </p>
           <div className="flex flex-col gap-6">
-            <button className="flex gap-2 border-2  w-full justify-center py-2 rounded-md text-lg">
-              {' '}
-              <Image src={google} width={30} height={30} alt="google" /> Sign in
-              with Google
+            <button
+              type="button"
+              onClick={() => signIn('google')}
+              className="flex gap-2 border-2 w-full justify-center py-2 rounded-md text-lg"
+            >
+              <Image src={google} width={30} height={30} alt="google" />
+              Sign in with Google
             </button>
             <div className="relative">
               <hr className="absolute  top-[50%] z-0 bg-white w-[15%] sm:w-[23%] h-[0.10rem]" />
@@ -94,13 +98,6 @@ const page = () => {
               </button>
             </div>
             <div className="flex justify-between text-[11.8px] md:text-[12.8px] font-semibold">
-              <div>
-                <input
-                  type="checkbox"
-                  className="bg-transparent border-2 mr-1 "
-                />{' '}
-                Remember me
-              </div>
               <Link href="/auth/forgetpassword" className="hover:text-black/80">
                 {' '}
                 Forgot Password ?
