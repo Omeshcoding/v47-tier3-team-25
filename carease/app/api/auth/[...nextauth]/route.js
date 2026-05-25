@@ -59,8 +59,6 @@ export const authOptions = {
       },
     }),
 
-    // Google can stay here for now.
-    // You can configure the credentials later.
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
