@@ -26,6 +26,7 @@ const CategoryName = ({ params }) => {
         {carsByCategory.map((car) => {
           return (
             <Card
+              key={car._id}
               tag={car.category}
               imageUrl={car.imageUrl}
               model={car.model}
