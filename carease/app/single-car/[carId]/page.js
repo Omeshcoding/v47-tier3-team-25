@@ -79,10 +79,10 @@ const page = ({ params }) => {
           onMouseLeave={() => setShow(false)}
         >
           <div className="bg-gradient-to-t to-[#343131]/80 from-black/60 text-xs md:text-sm font-light transition-all duration-5000 py-2 w-[98%] sm:w-[450px]  md:w-[500px] flex justify-center gap-1 sm:gap-4 px-4  rounded-md linear">
-            {specmenu.map((item) => {
+            {specmenu.map((item, index) => {
               return (
                 <button
-                  key={item}
+                  key={index}
                   className={` px-2 md:px-4 py-2 rounded-md 
                      transition-all duration-300  capitalize ${
                        renderspec === item
