@@ -6,6 +6,7 @@ import google from '../../../public/images/google.svg';
 import Image from 'next/image';
 import Link from 'next/link';
 import axios from 'axios';
+import { signIn } from 'next-auth/react';
 
 const page = () => {
   const router = useRouter();
@@ -19,19 +20,36 @@ const page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('/api/users/signup', user);
-      console.log('Signup successfull', response.data);
 
-      router.push('/auth/login');
+    try {
+      // Create the account
+      await axios.post('/api/users/signup', user);
+
+      // Automatically log the user in
+      const result = await signIn('credentials', {
+        email: user.email,
+        password: user.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        console.error(result.error);
+        return;
+      }
+
+      router.push('/carlist');
     } catch (err) {
       console.error(err);
+
+      if (err.response) {
+        console.log(err.response.data);
+      }
     }
   };
 
   return (
     <section className="flex flex-col md:flex-row bg-signup-bg bg-cover h-[100%] text-black pt-24 py-6 px-4 tracking-wide ">
-      <div className="mx-auto my-6 pt-28 md:order-last rounded-md  bg-white/40 h-72 px-6 text-black">
+      <div className="mx-auto my-6 pt-28 md:order-last rounded-md  bg-white h-72 px-6 text-black">
         <h3 className="text-3xl text-center md:text-left  mb-6 lg:mb-0 font-bold ml-14">
           Register Now
         </h3>
@@ -40,7 +58,7 @@ const page = () => {
         </p>
       </div>
       <div
-        className=" bg-white/40 mx-auto w-auto 
+        className=" bg-white mx-auto w-auto 
       h-auto pb-1 pt-5 px-14 rounded-lg"
       >
         <Image
@@ -57,10 +75,13 @@ const page = () => {
             Register here for a personalized experience
           </p>
           <div className="flex flex-col gap-6">
-            <button className="flex gap-2 border-2  w-full justify-center py-2 rounded-md text-lg">
-              {' '}
-              <Image src={google} width={30} height={30} alt="google" /> Sign in
-              with Google
+            <button
+              type="button"
+              onClick={() => signIn('google')}
+              className="flex gap-2 border-2 w-full justify-center py-2 rounded-md text-lg"
+            >
+              <Image src={google} width={30} height={30} alt="google" />
+              Sign in with Google
             </button>
             <div className="relative">
               <hr className="absolute  top-[50%] z-0 bg-white w-[17%] sm:w-[26%] h-[0.10rem]" />
@@ -92,13 +113,15 @@ const page = () => {
             </div>
             <div>
               <label className="font-bold">ROLE</label>
-              <input
+              <select
                 value={user.role}
-                type="text"
-                placeholder="Enter Your Role"
-                className="w-full h-[47.582px] flex-shrink-0 border-2 px-4 rounded-md mt-2 bg-transparent outline-none"
                 onChange={(e) => setUser({ ...user, role: e.target.value })}
-              />
+                className="w-full h-[47.582px] border-2 px-4 rounded-md mt-2 bg-transparent outline-none"
+              >
+                <option value="">Select Role</option>
+                <option value="customer">Customer</option>
+                <option value="dealer">Dealer</option>
+              </select>
             </div>
             <div className="relative">
               <label className="font-bold"> PASSWORD</label>
