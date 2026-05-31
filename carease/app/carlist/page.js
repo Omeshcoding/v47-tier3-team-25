@@ -8,20 +8,24 @@ const page = () => {
   const [popularCars, setPopularCars] = useState([]);
   const [superCars, setSuperCars] = useState([]);
   const [upcomingCars, setUpcomingCars] = useState([]);
-  const [otherCars, setOtherCars] = useState([]);
+  const [hatchbackCars, setHatchbackCars] = useState([]);
   const getCarList = async () => {
     const response = await axios.get(
-      `/api/getTopThree/getTopThree/popular/supercars/upcoming/other`
+      `/api/getTopThree/getTopThree/popular/supercars/upcoming/hatchback`,
     );
     const data = await response.data;
-
-    const { popularCarsData, superCarsData, upcomingCarsData, otherCarsData } =
-      data;
+    console.log(data);
+    const {
+      popularCarsData,
+      superCarsData,
+      upcomingCarsData,
+      hatchbackCarsData,
+    } = data;
 
     setPopularCars(popularCarsData);
     setSuperCars(superCarsData);
     setUpcomingCars(upcomingCarsData);
-    setOtherCars(otherCarsData);
+    setHatchbackCars(hatchbackCarsData);
   };
   useEffect(() => {
     getCarList();
@@ -64,9 +68,9 @@ const page = () => {
             />
           </section>
 
-          <section id="otherCars">
+          <section id="hatchbackCars">
             <CategoryComponent
-              carData={otherCars}
+              carData={hatchbackCars}
               desc="Explore our cars, seamlessly merging exquisite style with unparalleled performance, delivering an extraordinary driving experience that redefines the benchmarks in automotive excellence."
             />
           </section>
