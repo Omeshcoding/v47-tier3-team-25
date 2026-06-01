@@ -56,6 +56,7 @@ const Hero = () => {
               {models.map((item) => {
                 return (
                   <Link
+                    key={item.id}
                     href={`/single-car/${item?.id}`}
                     className="text-sm md:text-lg hover:text-black/80"
                   >

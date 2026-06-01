@@ -19,8 +19,8 @@ const FilterSidebar = () => {
       <div onClick={() => scrollToSection('upcomingCars')}>
         <span>Upcoming Cars</span>
       </div>
-      <div onClick={() => scrollToSection('otherCars')}>
-        <span>Other Cars</span>
+      <div onClick={() => scrollToSection('hatchbackCars')}>
+        <span>Hatchback Cars</span>
       </div>
     </div>
   );

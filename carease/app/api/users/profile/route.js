@@ -1,25 +1,28 @@
-import { connect } from "@/dbconfig/dbconfig";
-import User from "@/models/user";
-import { NextResponse } from "next/server";
-import { getTokenData } from "@/helpers/getTokenData";
+import { auth } from '@/auth';
 
-connect()
+import { connect } from '@/dbconfig/dbconfig';
+import User from '@/models/user';
 
-export async function GET(request) {
-    try{    
-        const { id, role } = await getTokenData(request)
-        const user = await User.findById(id).select("-password")
+import { NextResponse } from 'next/server';
 
-        let welcomeMessage = "Welcome to admin profile"
+export async function GET() {
+  await connect();
 
-        if(role === 'customer'){
-            welcomeMessage = "Welcome customer"
-        } else if(role ==='dealer') {
-            welcomeMessage = "Welcome dealer"
-        }
+  const session = await auth();
 
-        return NextResponse.json({ message: welcomeMessage, user })
-    } catch(err){
-        return NextResponse.json({ error: err.message }, { status: 400 })
-    }
-} 
+  if (!session)
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const user = await User.findById(session.user.id).select('-password');
+
+  let message = 'Welcome to admin profile';
+
+  if (user.role === 'customer') message = 'Welcome customer';
+
+  if (user.role === 'dealer') message = 'Welcome dealer';
+
+  return NextResponse.json({
+    message,
+    user,
+  });
+}
