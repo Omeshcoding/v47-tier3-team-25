@@ -1,6 +1,6 @@
 import Navbar from '@/components/Navbar';
 import './globals.css';
-import Footer from '@/components/Footer';
+import AuthSessionProvider from './providers/SessionProvider';
 
 export const metadata = {
   title: 'CarEase',
@@ -11,9 +11,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Navbar />
-
-        {children}
+        <AuthSessionProvider>
+          <Navbar />
+          {children}
+        </AuthSessionProvider>
       </body>
     </html>
   );

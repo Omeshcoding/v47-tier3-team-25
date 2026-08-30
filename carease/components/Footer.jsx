@@ -6,12 +6,21 @@ import { RxDiscordLogo } from 'react-icons/rx';
 import Link from 'next/link';
 import Image from 'next/image';
 import logo from '@/public/images/logo.svg';
+
 const Footer = () => {
+  // Array of social media items with unique IDs
+  const socialIcons = [
+    { id: 'facebook', icon: <PiFacebookLogoBold />, href: '#' },
+    { id: 'instagram', icon: <FaInstagram />, href: '#' },
+    { id: 'discord', icon: <RxDiscordLogo />, href: '#' },
+    { id: 'twitter', icon: <CiTwitter />, href: '#' },
+  ];
+
   return (
-    <section className=" relative  w-full bg-black  text-white">
+    <section className="relative w-full bg-black text-white">
       <div className="flex flex-col gap-6 md:flex-row md:h-[500px] md:text-left text-center">
         <div className="md:w-[60%] py-24 md:px-28 md:text-left text-center">
-          <h4 className="uppercase mb-10 text-2xl">CarEase Corperate</h4>
+          <h4 className="uppercase mb-10 text-2xl">CarEase Corporate</h4>
           <div className="flex flex-col gap-6 md:flex-row justify-between md:mr-10">
             <div>
               <ul className="flex flex-col gap-8">
@@ -53,18 +62,14 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-            <div className="">
+            <div>
               FOLLOW US
               <ul className="flex gap-4 mt-4 justify-center md:justify-start">
-                {[
-                  <PiFacebookLogoBold />,
-                  <FaInstagram />,
-                  <RxDiscordLogo />,
-                  <CiTwitter />,
-                ].map((item) => (
-                  <li className="item" key={item}>
-                    <a href="#" className="text-2xl">
-                      {item}
+                {/* ✅ FIXED: Using item.id for a unique string key */}
+                {socialIcons.map((social) => (
+                  <li className="item" key={social.id}>
+                    <a href={social.href} className="text-2xl">
+                      {social.icon}
                     </a>
                   </li>
                 ))}
@@ -82,7 +87,7 @@ const Footer = () => {
           width={100}
           height={100}
           alt="carease"
-          className="mx-auto cursot-pointer"
+          className="mx-auto cursor-pointer"
         />
       </Link>
     </section>

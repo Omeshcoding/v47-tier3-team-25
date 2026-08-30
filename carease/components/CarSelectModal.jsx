@@ -12,6 +12,7 @@ const CompareCarModel = ({ model, carId }) => {
   const router = useRouter();
   const [carName, setCarName] = useState({ name: null, id: null });
   const [cardata, setCarData] = useState([]);
+  const [error, setError] = useState([]);
   const carData = async () => {
     const response = await axios.get(`/api/getCar`);
     const data = response.data;
@@ -69,7 +70,7 @@ const CompareCarModel = ({ model, carId }) => {
           const { inputValue } = params;
 
           const isExisting = options.some(
-            (option) => inputValue === option.model
+            (option) => inputValue === option.model,
           );
 
           if (inputValue !== '' && !isExisting) {
@@ -81,11 +82,14 @@ const CompareCarModel = ({ model, carId }) => {
 
           return filtered;
         }}
-        renderOption={(props, option) => (
-          <Link href={`/comparecar`} key={props.id} {...props}>
-            {option.model}
-          </Link>
-        )}
+        renderOption={(props, option) => {
+          const { key, ...optionProps } = props;
+          return (
+            <Link href={`/comparecar`} key={props.id} {...props}>
+              {option.model}
+            </Link>
+          );
+        }}
         options={cardata}
         getOptionLabel={(option) => {
           if (typeof option === 'string') {

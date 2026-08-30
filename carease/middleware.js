@@ -1,23 +1,29 @@
-import { NextResponse } from 'next/server';
-import { getTokenData } from './helpers/getTokenData';
+import { withAuth } from 'next-auth/middleware';
 
-export async function middleware(request) {
-  const path = request.nextUrl.pathname;
+export default withAuth(
+  function middleware(req) {
+    // Optional custom middleware logic
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => {
+        return !!token;
+      },
+    },
 
-  const isPublicPath = path === '/auth/login' || path === '/auth/signup';
-
-  const tokenCookie = request.cookies.get('token');
-  const token = tokenCookie ? tokenCookie.value : '';
-
-  if (isPublicPath && token) {
-    return NextResponse.redirect(new URL('/profile', request.nextUrl));
-  }
-
-  if (!isPublicPath && !token) {
-    return NextResponse.redirect(new URL('/auth/login', request.nextUrl));
-  }
-}
+    pages: {
+      signIn: '/auth/login',
+    },
+  },
+);
 
 export const config = {
-  matcher: ['/profile', '/login', '/signup'],
+  matcher: [
+    '/profile/:path*',
+    '/carlist/:path*',
+    '/car/:path*',
+    '/category/:path*',
+    '/comparecar/:path*',
+    '/comparison/:path*',
+  ],
 };

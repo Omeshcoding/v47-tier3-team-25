@@ -4,13 +4,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FaGripLines } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
+import { useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 
 const Navbar = () => {
   const [show, setShow] = useState(false);
+  const { data: session, status } = useSession();
 
+  const handleLogout = () => {
+    signOut({
+      callbackUrl: '/auth/login',
+    });
+  };
   const toogleNavbar = () => {
     return setShow(!show);
   };
+
+  if (status === 'loading') {
+    return <p>Loading...</p>;
+  }
 
   return (
     <nav className="nav text-lg">
@@ -76,8 +88,8 @@ const Navbar = () => {
               <Link href="/category/upcoming" className="nav-hover">
                 Upcoming Cars
               </Link>
-              <Link href="/category/other" className="nav-hover">
-                Other Cars
+              <Link href="/category/hatchback" className="nav-hover">
+                Hatchback Cars
               </Link>
             </div>
           )}
@@ -91,19 +103,31 @@ const Navbar = () => {
               alt="compare-amount"
               className="mx-4 lg:mx-8"
             />
-            <Link
-              href="/auth/signup"
-              className=" bg-white px-8 py-1 rounded-full md:text-sm md:px-3 lg:text-lg lg:px-4 xl:px-8 nav-hover "
-            >
-              Register
-            </Link>
+            {!session ? (
+              <div className="flex gap-6 items-center  ">
+                <Link
+                  href="/auth/signup"
+                  className=" bg-white px-8 py-1 rounded-full md:text-sm md:px-3 lg:text-lg lg:px-4 xl:px-8 nav-hover "
+                >
+                  Register
+                </Link>
 
-            <Link
-              href="/auth/login"
-              className=" bg-white px-8  py-1 rounded-full md:text-sm md:px-3 lg:text-lg lg:px-4 xl:px-8 nav-hover"
-            >
-              Login
-            </Link>
+                <Link
+                  href="/auth/login"
+                  className=" bg-white px-8  py-1 rounded-full md:text-sm md:px-3 lg:text-lg lg:px-4 xl:px-8 nav-hover"
+                >
+                  Login
+                </Link>
+              </div>
+            ) : (
+              <Link
+                href="/auth/login"
+                onClick={handleLogout}
+                className=" bg-white px-8  py-1 rounded-full md:text-sm md:px-3 lg:text-lg lg:px-4 xl:px-8 nav-hover"
+              >
+                Logout
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -127,17 +151,29 @@ const Navbar = () => {
           </div>
           <div className="xl:ml-auto">
             <div className="flex flex-col xl:flex-row gap-6 items-center  ">
-              <Link href="/auth/signup" className=" bg-white navlink">
-                Register
-              </Link>
+              {!session ? (
+                <div className="flex gap-6 items-center  ">
+                  <Link href="/auth/signup" className=" bg-white navlink">
+                    Register
+                  </Link>
 
-              <Link
-                href="/auth/login
+                  <Link
+                    href="/auth/login
           "
-                className=" bg-white navlink"
-              >
-                Login
-              </Link>
+                    className=" bg-white navlink"
+                  >
+                    Login
+                  </Link>
+                </div>
+              ) : (
+                <Link
+                  href="/auth/login"
+                  onClick={handleLogout}
+                  className=" bg-white navlink"
+                >
+                  Logout
+                </Link>
+              )}
             </div>
           </div>
         </div>
